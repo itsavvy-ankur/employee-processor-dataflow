@@ -1,7 +1,6 @@
 package cloud.asitech.dataflow.employee.pipeline;
 
 import org.apache.beam.sdk.Pipeline;
-import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
@@ -46,7 +45,7 @@ public class EmployeeProcessor {
         // static FormatAsTextFn() to the ParDo transform.
 
         p.apply("ReadLines",
-                PubsubIO.readStrings().fromSubscription(options.getInputTopic()))
+                PubsubIO.readStrings().fromTopic(options.getInputTopic()))
                 .apply("To Upper Case", ParDo.of(new EmployeeUpperCaseDoFn()))
                 .apply(Window.into(FixedWindows.of(Duration.standardMinutes(1))))
                 .apply("Write Files to GCS", new WriteOneFilePerWindow(options.getOutput(), 1));
@@ -54,7 +53,6 @@ public class EmployeeProcessor {
                   /*      .apply("WriteCounts", TextIO.write().withWindowedWrites()
                         .withNumShards(1).to(options.getOutput())); */
 
-        p.run().waitUntilFinish();
     }
 
     public static class EmployeeUpperCaseDoFn extends DoFn<String, String> {
