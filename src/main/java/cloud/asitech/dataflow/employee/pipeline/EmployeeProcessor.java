@@ -1,7 +1,13 @@
 package cloud.asitech.dataflow.employee.pipeline;
 
+import com.google.api.services.bigquery.model.TimePartitioning;
+
 import org.apache.beam.sdk.Pipeline;
-import org.apache.beam.sdk.io.TextIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryHelpers;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.CreateDisposition;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.Method;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO.Write.WriteDisposition;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
 import org.apache.beam.sdk.options.Description;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
@@ -11,11 +17,16 @@ import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.ParDo;
 import org.apache.beam.sdk.transforms.windowing.FixedWindows;
 import org.apache.beam.sdk.transforms.windowing.Window;
+import org.apache.beam.sdk.values.PCollection;
 import org.joda.time.Duration;
 
 import cloud.asitech.dataflow.employee.utils.WriteOneFilePerWindow;
 
 public class EmployeeProcessor {
+
+    private static final int BATCH_INTERVAL = 1;
+    private static final int NUM_SHARDS = 100;
+    private static final String TIME_PARTITIONING_COLUMN = "bq_ins_dt";
 
     public interface EmployeePipelineOptions extends StreamingOptions {
 
@@ -35,6 +46,13 @@ public class EmployeeProcessor {
         String getOutput();
 
         void setOutput(String value);
+
+        @Description("BQ Table detail via the TableReference Scheme")
+        @Required
+        String getTableDetail();
+
+        void setTableDetail(String value);
+
     }
 
     static void runEmployeeProcessor(EmployeePipelineOptions options) {
@@ -45,14 +63,21 @@ public class EmployeeProcessor {
         // and passes the
         // static FormatAsTextFn() to the ParDo transform.
 
-        p.apply("ReadLines",
-                PubsubIO.readStrings().fromSubscription(options.getInputTopic()))
-                .apply("To Upper Case", ParDo.of(new EmployeeUpperCaseDoFn()))
+        PCollection<String> messages = p.apply("ReadLines",
+                PubsubIO.readStrings().fromSubscription(options.getInputTopic()));
+
+                
+        messages.apply("convToTR", new XmlToBQDoFn()).apply("WriteToBQ",
+                BigQueryIO.writeTableRows().withTriggeringFrequency(Duration.standardMinutes(BATCH_INTERVAL))
+                        .withMethod(Method.FILE_LOADS).withNumFileShards(NUM_SHARDS)
+                        .withWriteDisposition(WriteDisposition.WRITE_APPEND)
+                        .withCreateDisposition(CreateDisposition.CREATE_NEVER)
+                        .withTimePartitioning(new TimePartitioning().setField(TIME_PARTITIONING_COLUMN))
+                        .to(BigQueryHelpers.parseTableSpec(options.getTableDetail())));
+
+        messages.apply("To Upper Case", ParDo.of(new EmployeeUpperCaseDoFn()))
                 .apply(Window.into(FixedWindows.of(Duration.standardMinutes(1))))
                 .apply("Write Files to GCS", new WriteOneFilePerWindow(options.getOutput(), 1));
-                       
-                  /*      .apply("WriteCounts", TextIO.write().withWindowedWrites()
-                        .withNumShards(1).to(options.getOutput())); */
 
         p.run().waitUntilFinish();
     }
