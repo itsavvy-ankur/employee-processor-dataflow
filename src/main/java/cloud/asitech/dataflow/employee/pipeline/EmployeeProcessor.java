@@ -64,7 +64,7 @@ public class EmployeeProcessor {
         // static FormatAsTextFn() to the ParDo transform.
 
         PCollection<String> messages = p.apply("ReadLines",
-                PubsubIO.readStrings().fromSubscription(options.getInputTopic()));
+                PubsubIO.readStrings().fromTopic(options.getInputTopic()));
 
                 
         messages.apply("convToTR", new XmlToBQDoFn()).apply("WriteToBQ",
@@ -79,7 +79,9 @@ public class EmployeeProcessor {
                 .apply(Window.into(FixedWindows.of(Duration.standardMinutes(1))))
                 .apply("Write Files to GCS", new WriteOneFilePerWindow(options.getOutput(), 1));
 
-        p.run().waitUntilFinish();
+                p.run(options);
+                
+
     }
 
     public static class EmployeeUpperCaseDoFn extends DoFn<String, String> {

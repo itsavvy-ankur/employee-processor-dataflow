@@ -9,7 +9,7 @@ mvn compile exec:java -Dexec.mainClass=cloud.asitech.dataflow.employee.pipeline.
                   --gcpTempLocation=gs://data-flow-asitech/tmp \
                   --tempLocation=gs://data-flow-asitech/bq/tmp \
                   --serviceAccount=dataflow-processor-sa@asitech-dev.iam.gserviceaccount.com \
-                  --inputTopic=projects/asitech-dev/subscriptions/big2gcp-img-sub --output=gs://data-flow-asitech/employee \
+                  --inputTopic=projects/asitech-dev/topics/big2gcp-img --output=gs://data-flow-asitech/employee \
                   --tableDetail=asitech-dev:employee_info.employee_details" \
      -Pdataflow-runner
 ```
