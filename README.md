@@ -2,9 +2,9 @@
 
 ## A simple dataflow job to demonstrate PubSub to BQ and GCS
 
-![Employee DataFlow Processor](docs\emp_processor_dataflow.png)
+![Employee DataFlow Processor](docs/emp_processor_dataflow.png)
 
-## Dataaflow Runner instructions
+## Dataflow Runner instructions
 
 ```shell
 mvn compile exec:java -Dexec.mainClass=cloud.asitech.dataflow.employee.pipeline.EmployeeProcessor \
