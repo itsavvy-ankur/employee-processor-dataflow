@@ -1,5 +1,9 @@
 # Employee Processor Dataflow Job
 
+## A simple dataflow job to demonstrate PubSub to BQ and GCS
+
+![Employee DataFlow Processor](docs\emp_processor_dataflow.png)
+
 ## Dataaflow Runner instructions
 
 ```shell
