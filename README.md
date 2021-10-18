@@ -13,7 +13,19 @@ mvn compile exec:java -Dexec.mainClass=cloud.asitech.dataflow.employee.pipeline.
                   --gcpTempLocation=gs://data-flow-asitech/tmp \
                   --tempLocation=gs://data-flow-asitech/bq/tmp \
                   --serviceAccount=dataflow-processor-sa@asitech-dev.iam.gserviceaccount.com \
-                  --inputTopic=projects/asitech-dev/topics/big2gcp-img --output=gs://data-flow-asitech/employee \
+                  --inputTopic=projects/asitech-dev/topics/employee-topic --output=gs://data-flow-asitech/employee \
                   --tableDetail=asitech-dev:employee_info.employee_details" \
      -Pdataflow-runner
+```
+
+
+## Example XML
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<employee>
+   <name>Mr John Test</name>
+   <email>test@abc.com</email>
+   <country>GB</country>
+</employee>
 ```
