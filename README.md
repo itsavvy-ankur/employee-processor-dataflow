@@ -1,3 +1,5 @@
+[![CodeQL](https://github.com/itsavvy-ankur/employee-processor-dataflow/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/itsavvy-ankur/employee-processor-dataflow/actions/workflows/codeql-analysis.yml)
+
 # Employee Processor Dataflow Job
 
 ## A simple dataflow job to demonstrate PubSub to BQ and GCS
