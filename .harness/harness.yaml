@@ -42,4 +42,4 @@ pipeline:
                       log:
                         level: info
                     ingestion:
-                      file: codeql-analysis.xml
+                      file: codeql-analysis.yml
