@@ -83,6 +83,7 @@
           <parallel>all</parallel>
           <threadCount>4</threadCount>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <argLine>${harnessArgLine}  @{argLine} </argLine>
         </configuration>
         <dependencies>
           <dependency>
