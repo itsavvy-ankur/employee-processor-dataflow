@@ -1,0 +1,25 @@
+              - step:
+                   type: Run
+                   name: build
+                   identifier: build
+                   spec:
+                     connectorRef: account.harnessImage
+                     image: maven:3.8-jdk-11
+                     shell: Sh
+                     command: |-
+                       mvn clean package dependency:copy-dependencies
+                   - step:
+                       type: Run
+                       name: check dependencies
+                       identifier: check_dependencies
+                       spec:
+                         connectorRef: account.harnessImage
+                         image: maven:3.8-jdk-11
+                         shell: Sh
+                         command: |-
+                           mvn dependency-check:check -U -DskipTests
+                         reports:
+                           type: JUnit
+                           spec:
+                             paths:
+                               - /harness/target/*.xml
