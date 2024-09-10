@@ -35,3 +35,4 @@ pipeline:
                     image: maven:3.8-jdk-11
                     shell: Sh
                     command: mvn clean install
+                    
