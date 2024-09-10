@@ -1,0 +1,45 @@
+pipeline:
+  name: employee-processor-dataflow
+  identifier: employeeprocessordataflow
+  projectIdentifier: default_project
+  orgIdentifier: default
+  tags: {}
+  properties:
+    ci:
+      codebase:
+        connectorRef: itsavvyankurgithub
+        repoName: employee-processor-dataflow
+        build: <+input>
+  stages:
+    - stage:
+        name: build
+        identifier: build
+        description: ""
+        type: CI
+        spec:
+          cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
+          runtime:
+            type: Cloud
+            spec: {}
+          execution:
+            steps:
+              - step:
+                  type: CodeQL
+                  name: CodeQL_1
+                  identifier: CodeQL_1
+                  spec:
+                    mode: ingestion
+                    config: default
+                    target:
+                      type: repository
+                      detection: manual
+                      name: harness/employee-processor
+                      variant: main
+                    advanced:
+                      log:
+                        level: info
+                    ingestion:
+                      file: codeql-analysis.xml
