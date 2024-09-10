@@ -1,0 +1,14 @@
+inputSet:
+  name: employee-processor-dataflow-inputset
+  identifier: employeeprocessordataflowinputset
+  orgIdentifier: default
+  projectIdentifier: default_project
+  pipeline:
+    identifier: employeeprocessordataflow
+    properties:
+      ci:
+        codebase:
+          build:
+            type: branch
+            spec:
+              branch: <+trigger.branch>
