@@ -27,19 +27,11 @@ pipeline:
           execution:
             steps:
               - step:
-                  type: CodeQL
-                  name: CodeQL_1
-                  identifier: CodeQL_1
+                  type: Run
+                  name: mvn_clean_install
+                  identifier: mvn_clean_install
                   spec:
-                    mode: ingestion
-                    config: default
-                    target:
-                      type: repository
-                      detection: manual
-                      name: harness/employee-processor
-                      variant: main
-                    advanced:
-                      log:
-                        level: info
-                    ingestion:
-                      file: codeql-analysis.yml
+                    connectorRef: account.harnessImage
+                    image: maven:3.8-jdk-11
+                    shell: Sh
+                    command: mvn clean install
