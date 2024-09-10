@@ -1,0 +1,5 @@
+service:
+  name: employee-processor-dataflow
+  identifier: employeeprocessordataflow
+  orgIdentifier: default
+  projectIdentifier: default_project
