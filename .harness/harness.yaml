@@ -32,7 +32,6 @@ pipeline:
                   identifier: mvn_clean_install
                   spec:
                     connectorRef: account.harnessImage
-                    image: maven:3.8-jdk-11
+                    image: maven:3.8.5-openjdk-18
                     shell: Sh
                     command: mvn clean install
-                    
